@@ -1,0 +1,30 @@
+name: CI - Product Manager
+
+on:
+    push:
+        branches: [master, "features/product-manager"]
+    pull_request: 
+        branches: [master]
+jobs:
+    build:
+        name: Build et Lint
+        runs-on: ubuntu-lastest
+
+        steps:
+            - name: Checkout du code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '22'
+                cache: 'npm'
+
+            - name: Installer les dépendances
+              run: npm install
+            
+            - name: Linting
+              run: npm run lint
+            
+            - name: Build
+              run: npm run build
