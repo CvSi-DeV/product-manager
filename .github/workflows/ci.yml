@@ -2,9 +2,9 @@ name: CI - Product Manager
 
 on:
     push:
-        branches: [master, "features/product-manager"]
+        branches: [main, "feature/product-manager"]
     pull_request: 
-        branches: [master]
+        branches: [main]
 jobs:
     build:
         name: Build et Lint
