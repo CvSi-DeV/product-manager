@@ -57,7 +57,7 @@ function ProductForm({ onAddProduct }: ProductFormProps) {
                 <input placeholder='Prix' type="number" id="price" value={price} onChange={(e) => setPrice(Number(e.currentTarget.value))} min={0} />
                 <input placeholder='Stock' type="number" id="stock" value={stock} onChange={(e) => setStock(Number(e.currentTarget.value))} min={0} />
                 <select value={category} onChange={(e) => setCategory(e.currentTarget.value as Category)}>
-                    <option value={'Électronique'}>Electronique</option>
+                    <option value="Électronique">Electronique</option>
                     <option value="Vêtements">Vêtements</option>
                     <option value="Alimentation">Alimentation</option>
                     <option value="Autre">Autre</option>

@@ -97,3 +97,21 @@ export const searchInput = {
     flex: 1,
     backgroundColor: 'transparent'
 }
+
+export const filterPanelContainer = {
+    backgroundColor: colors.gray[50],
+    border: `1px solid ${colors.gray[200]}`,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
+    display: 'flex',
+    gap: spacing.xl,
+    alignItems: 'center',
+    flexWrap: 'wrap' as const
+}
+
+export const inputRadioFilterPanel = {
+    display: 'flex',
+    gap: spacing.md,
+    alignItems: 'center',
+}
