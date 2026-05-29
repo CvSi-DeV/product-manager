@@ -71,3 +71,11 @@ export const input = {
     fontSize: '14px',
     width: '100%'
 };
+
+export const label = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing.xs,
+    fontSize: '14px',
+    color: colors.gray[700]
+}
