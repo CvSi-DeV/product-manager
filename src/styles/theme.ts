@@ -125,3 +125,30 @@ export const cartPanel = {
     padding: `${spacing.sm} ${spacing.xl}`,
     borderRadius: borderRadius.lg
 }
+
+export const statisticsPanel = {
+    display: 'flex',
+    gap: spacing.xl,
+    backgroundColor: colors.gray[100],
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
+}
+
+export const statisticsDiv = {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: spacing.xs
+}
+
+export const statisticsLabel = {
+    fontSize: '12px',
+    color: colors.gray[500]
+}
+
+export const statisticValue = {
+    fontSize: '24px',
+    fontWeight: '700',
+    color: colors.gray[900]
+}
