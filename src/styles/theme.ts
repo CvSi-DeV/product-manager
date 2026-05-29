@@ -74,8 +74,26 @@ export const input = {
 
 export const label = {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
     gap: spacing.xs,
     fontSize: '14px',
     color: colors.gray[700]
+}
+
+export const searchBar = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.white,
+    border: `1px solid ${colors.gray[300]}`,
+    borderRadius: borderRadius.lg,
+    padding: `${spacing.sm} ${spacing.md}`,
+    marginBottom: spacing.xl
+}
+export const searchInput = {
+    border: 'none',
+    outline: 'none',
+    fontSize: '16px',
+    flex: 1,
+    backgroundColor: 'transparent'
 }
