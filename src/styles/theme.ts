@@ -115,3 +115,13 @@ export const inputRadioFilterPanel = {
     gap: spacing.md,
     alignItems: 'center',
 }
+
+export const cartPanel = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.lg,
+    backgroundColor: colors.primary,
+    color: colors.white,
+    padding: `${spacing.sm} ${spacing.xl}`,
+    borderRadius: borderRadius.lg
+}
