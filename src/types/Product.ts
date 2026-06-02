@@ -9,4 +9,3 @@ export interface Product {
     stock: number;
     category: Category;
 };
-

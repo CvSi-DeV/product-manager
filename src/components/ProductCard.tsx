@@ -56,7 +56,7 @@ function ProductCard({ product, onAddToCart, onDelete, onUpdateStock }: ProductC
                     min={0}
                     value={product.stock}
                     onChange={
-                        (e) => onUpdateStock(product.id, Number.parseInt(e.currentTarget.value, 10))
+                        (e) => onUpdateStock(product.id, Number.parseInt(e.currentTarget.value, 10) || 0)
                     } />
                 <span> unités </span>
                 <div style={{ fontSize: '12px', marginTop: spacing.xs }}>

@@ -152,3 +152,27 @@ export const statisticValue = {
     fontWeight: '700',
     color: colors.gray[900]
 }
+
+export const appContainer = {
+    padding: spacing.xl,
+    backgroundColor: colors.gray[50],
+    minHeight: '100vh'
+}
+
+export const h2Title = {
+    fontSize: '32px',
+    fontWeight: '700',
+    color: colors.gray[900]
+}
+
+export const productCountSpan = {
+    color: colors.gray[500],
+    marginBottom: spacing.lg,
+    fontSize: '14px'
+}
+
+export const productGrill = {
+    display: 'flex',
+    flexWrap: 'wrap' as const,
+    gap: spacing.xl
+}

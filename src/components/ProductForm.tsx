@@ -6,6 +6,11 @@ interface ProductFormProps {
     onAddProduct: (product: Omit<Product, 'id'>) => void;
 }
 
+//Tools
+const capitalizeFirst = (str: string) => {
+    if (str.length === 0) return str;
+    return (str.slice(0, 1).toUpperCase() + str.slice(1));
+}
 function ProductForm({ onAddProduct }: ProductFormProps) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
@@ -53,15 +58,25 @@ function ProductForm({ onAddProduct }: ProductFormProps) {
                 flexWrap: 'wrap',
                 alignItems: 'flex-end'
             }}>
-                <input placeholder='Nom' type="text" id="name" value={name} onChange={(e) => setName(e.currentTarget.value)} />
-                <input placeholder='Prix' type="number" id="price" value={price} onChange={(e) => setPrice(Number(e.currentTarget.value))} min={0} />
-                <input placeholder='Stock' type="number" id="stock" value={stock} onChange={(e) => setStock(Number(e.currentTarget.value))} min={0} />
-                <select value={category} onChange={(e) => setCategory(e.currentTarget.value as Category)}>
-                    <option value="Électronique">Electronique</option>
-                    <option value="Vêtements">Vêtements</option>
-                    <option value="Alimentation">Alimentation</option>
-                    <option value="Autre">Autre</option>
-                </select>
+                <label>Nom :
+                    <input placeholder='Nom' type="text" value={name} onChange={(e) => {
+                        setName(capitalizeFirst(e.currentTarget.value))
+                    }} />
+                </label>
+                <label>Prix :
+                    <input placeholder='Prix' type="number" value={price} onChange={(e) => setPrice(Number(e.currentTarget.value))} min={0} />
+                </label>
+                <label>Stock :
+                    <input placeholder='Stock' type="number" value={stock} onChange={(e) => setStock(Number(e.currentTarget.value))} min={0} />
+                </label>
+                <label> Catégorie :
+                    <select value={category} onChange={(e) => setCategory(e.currentTarget.value as Category)}>
+                        <option value="Électronique">Electronique</option>
+                        <option value="Vêtements">Vêtements</option>
+                        <option value="Alimentation">Alimentation</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </label>
                 <button style={{
                     ...button,
                     backgroundColor: colors.success,
