@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { borderRadius, button, colors, spacing } from "../styles/theme";
+import type { Category, Product } from "../types/Product"
+
+interface ProductFormProps {
+    onAddProduct: (product: Omit<Product, 'id'>) => void;
+}
+
+//Tools
+const capitalizeFirst = (str: string) => {
+    if (str.length === 0) return str;
+    return (str.slice(0, 1).toUpperCase() + str.slice(1));
+}
+function ProductForm({ onAddProduct }: ProductFormProps) {
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(0);
+    const [stock, setStock] = useState(0);
+    const [category, setCategory] = useState<Category>('Autre');
+
+
+    const handleSubmit = () => {
+        if (name.trim() === '') {
+            console.log('Nom incorrect');
+            return;  // ← Stoppe la fonction
+        }
+        if (price <= 0) {
+            console.log('Prix incorrect');
+            return;
+        }
+        if (stock < 0) {
+            console.log('Stock incorrect');
+            return;
+        }
+
+        // Si on arrive ici → tout est valide
+        onAddProduct({ name, price, stock, category });
+
+        // Reset seulement si succès
+        setName('');
+        setPrice(0);
+        setStock(0);
+        setCategory('Autre');
+    };
+
+    return (
+        <div style={{
+            backgroundColor: colors.gray[50],
+            border: `1px solid ${colors.gray[200]}`,
+            borderRadius: borderRadius.xl,
+            padding: spacing.xl,
+            marginBottom: spacing.xl
+        }}>
+            <div style={{ marginBottom: spacing.xxl }}>➕ Ajouter un produit
+            </div>
+            <div style={{
+                display: 'flex',
+                gap: spacing.md,
+                flexWrap: 'wrap',
+                alignItems: 'flex-end'
+            }}>
+                <label>Nom :
+                    <input placeholder='Nom' type="text" value={name} onChange={(e) => {
+                        setName(capitalizeFirst(e.currentTarget.value))
+                    }} />
+                </label>
+                <label>Prix :
+                    <input placeholder='Prix' type="number" value={price} onChange={(e) => setPrice(Number(e.currentTarget.value))} min={0} />
+                </label>
+                <label>Stock :
+                    <input placeholder='Stock' type="number" value={stock} onChange={(e) => setStock(Number(e.currentTarget.value))} min={0} />
+                </label>
+                <label> Catégorie :
+                    <select value={category} onChange={(e) => setCategory(e.currentTarget.value as Category)}>
+                        <option value="Électronique">Electronique</option>
+                        <option value="Vêtements">Vêtements</option>
+                        <option value="Alimentation">Alimentation</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </label>
+                <button style={{
+                    ...button,
+                    backgroundColor: colors.success,
+                    color: colors.white
+                }} onClick={handleSubmit}>Ajouter ✅</button>
+            </div>
+        </div >
+    );
+}
+
+export default ProductForm;
