@@ -2,7 +2,7 @@ name: CI - Product Manager
 
 on:
     push:
-        branches: [main, "feature/product-manager"]
+        branches: [main, "feature/product-manager", "features/backendLink"]
     pull_request: 
         branches: [main]
 jobs:
