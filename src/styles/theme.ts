@@ -176,3 +176,29 @@ export const productGrill = {
     flexWrap: 'wrap' as const,
     gap: spacing.xl
 }
+
+export const loginContainer = {
+    maxWidth: '400px',
+    margin: '100px auto',
+    padding: '32px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    backgroundColor: 'white'
+}
+
+export const loginInput = {
+    width: '100%',
+    padding: '10px',
+    marginBottom: '16px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '6px',
+    fontSize: '14px',
+    boxSizing: 'border-box' as const
+}
+
+export const loginError = {
+    color: '#ef4444',
+    fontSize: '13px',
+    marginBottom: '12px'
+}
