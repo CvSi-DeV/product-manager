@@ -7,10 +7,15 @@ import Statistics from './components/Statistics';
 import SearchBar from './components/SearchBar';
 import FilterPanel from './components/FilterPanel';
 import ProductForm from './components/ProductForm';
-import { API_URL, PRODUCT_URL } from './config/api';
+import { API_URL, getAuthHeaders, PRODUCT_URL } from './config/api';
+import LoginForm from './components/LoginForm';
 
 function App() {
   //STATES
+
+  //LoginForm
+  const [isConnected, setIsConnected] = useState(!!localStorage.getItem('token'));
+
   //Products
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -30,6 +35,7 @@ function App() {
 
   useEffect(() => {
     const loadProduct = async () => {
+
       try {
         setIsLoading(true);
         //appel fetch 
@@ -49,14 +55,24 @@ function App() {
       }
     };
 
+    if (!isConnected) return;
     loadProduct();
-  }, []);
+  }, [isConnected]);
+
+  const handleLoginSuccess = (token: string) => {
+    localStorage.setItem('token', token);
+    setIsConnected(true);
+  }
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    setIsConnected(false);
+  }
 
   //Ajouter un produit
   const handleAddProduct = async (product: Omit<Product, 'id'>) => {
     const response = await fetch(`${API_URL}${PRODUCT_URL}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(product)
     });
 
@@ -71,7 +87,10 @@ function App() {
     if (!products.find(p => p.id === id)) throw new Error(`Produit inexistant ${id} : impossible de supprimer le produit`);
 
     const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
-      { method: 'DELETE' }
+      {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      }
     );
 
     if (!response.ok) throw new Error(`Error ${response.status}`)
@@ -85,7 +104,7 @@ function App() {
     const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
       {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ stock: newStock })
       });
 
@@ -105,6 +124,7 @@ function App() {
     console.log("Ajout panier:", id);
     console.log("panier: ", productsInCart);
   };
+
 
   // Rechercher par le nom 
   const searchedProducts = products.filter((product) => (product.name.toLowerCase().includes(searchedTerm.toLowerCase())));
@@ -131,6 +151,9 @@ function App() {
     return 0;
   });
 
+  if (!isConnected) return (
+    <LoginForm onLoginSuccess={handleLoginSuccess} />
+  );
   if (isLoading) return (
     <div style={{
       display: 'flex',
@@ -155,6 +178,19 @@ function App() {
   return (
     <div style={appContainer}>
       <h1>Product Manager</h1>
+      <button style={{
+        position: 'fixed',
+        top: '16px',
+        right: '16px',
+        backgroundColor: '#ef4444',
+        color: 'white',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        zIndex: 1000
+      }} onClick={handleLogOut}>Deconnexion</button>
       <div>
         <h2 style={h2Title}>Mon Panier</h2>
         <Cart cart={productsInCart} products={products} />
