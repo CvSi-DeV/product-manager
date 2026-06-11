@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { API_URL, getAuthHeaders, PRODUCT_URL } from './../config/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { type ProductFilterStock, type ProductSortBy, type Product } from './../types/Product';
@@ -30,7 +30,7 @@ function ProductPage() {
 
     const navigate = useNavigate();
     const { logout } = useAuth();
-    const { productInCart, products, addToCart, setCartProducts } = useCart();
+    const { productInCart, products, addToCart, setCartProducts, clearCart } = useCart();
 
     //-------
     //UseEffect
@@ -57,17 +57,18 @@ function ProductPage() {
         };
 
         loadProduct();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [setCartProducts]);
 
-    const handleLogOut = () => {
+    const handleLogOut = useCallback(() => {
         //fonction logout de useAuth();
         logout();
+        //effacer le panier 
+        clearCart();
         navigate('/login');
-    }
+    }, [logout, clearCart, navigate]);
 
     //Ajouter un produit
-    const handleAddProduct = async (product: Omit<Product, 'id'>) => {
+    const handleAddProduct = useCallback(async (product: Omit<Product, 'id'>) => {
         const response = await fetch(`${API_URL}${PRODUCT_URL}`, {
             method: 'POST',
             headers: getAuthHeaders(),
@@ -81,10 +82,12 @@ function ProductPage() {
 
         //mettre à jour la liste des produits 
         setCartProducts(newProducts);
-    };
+    }, [products, setCartProducts]);
 
     //Supprimer un produit
-    const handleDelete = async (id: number) => {
+    const handleDelete = useCallback(async (id: number) => {
+        console.log('🔄 handleDelete recréé');
+
         if (!products.find(p => p.id === id)) throw new Error(`Produit inexistant ${id} : impossible de supprimer le produit`);
 
         const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
@@ -99,9 +102,9 @@ function ProductPage() {
 
         //mettre à jour la liste des produits dans le cart (useCart contexte)
         setCartProducts(newProductsList);
-    };
+    }, [products, setCartProducts]);
 
-    const handleUpdateStock = async (id: number, newStock: number) => {
+    const handleUpdateStock = useCallback(async (id: number, newStock: number) => {
         if (!products.find(p => p.id === id)) throw new Error(`Produit inexistant ${id} : impossible de mettre à jour le stock`);
 
         const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
@@ -116,42 +119,52 @@ function ProductPage() {
         setCartProducts(products.map(p =>
             p.id === id ? { ...p, stock: newStock } : p
         ));
-    };
+    }, [setCartProducts, products]);
 
-    const handleAddToCart = (id: number) => {
+    const handleAddToCart = useCallback((id: number) => {
         const productToCart = products.find(p => (p.id === id));
         if (!productToCart) {
             return console.log(`Produit inexistant '${id}': impossible d'ajouter au panier`);
         }
         addToCart(id);
         console.log("Ajout panier:", id);
-    };
-
+    }, [products, addToCart]);
 
     // Rechercher par le nom 
-    const searchedProducts = products.filter((product) => (product.name.toLowerCase().includes(searchedTerm.toLowerCase())));
+    const searchedProducts = useMemo(() => {
+        console.log('🔄 Recalcul searchedProducts');
+
+        return products.filter((product) => (product.name.toLowerCase().includes(searchedTerm.toLowerCase())));
+    }, [products, searchedTerm]);
 
     // Filtrer par le stock
-    const filteredProducts = searchedProducts.filter((p) => {
-        if (filterStock === 'inStock') return p.stock > 0;
-        if (filterStock === 'outOfStock') return p.stock === 0;
-        return true;  // 'all'
-    });
+    const filteredProducts = useMemo(() => {
+        console.log('🔄 Recalcul filteredProducts');
 
+        return searchedProducts.filter((p) => {
+            if (filterStock === 'inStock') return p.stock > 0;
+            if (filterStock === 'outOfStock') return p.stock === 0;
+            return true;  // 'all'
+        });
+    }, [searchedProducts, filterStock]);
 
     // Trier par le critère
-    const sortedProducts = [...filteredProducts].sort((p1, p2) => {
-        if (sortBy === 'name')
-            return p1.name.localeCompare(p2.name);
+    const sortedProducts = useMemo(() => {
+        console.log('🔄 Recalcul sortedProducts');
 
-        if (sortBy === 'price')
-            return p1.price - p2.price;
+        return [...filteredProducts].sort((p1, p2) => {
+            if (sortBy === 'name')
+                return p1.name.localeCompare(p2.name);
 
-        if (sortBy === 'stock')
-            return p1.stock - p2.stock
+            if (sortBy === 'price')
+                return p1.price - p2.price;
 
-        return 0;
-    });
+            if (sortBy === 'stock')
+                return p1.stock - p2.stock
+
+            return 0;
+        });
+    }, [filteredProducts, sortBy]);
 
     if (isLoading) return (
         <div style={{
@@ -191,10 +204,10 @@ function ProductPage() {
                 zIndex: 1000
             }} onClick={handleLogOut}>Deconnexion</button>
             <div>
-                <h2 style={h2Title}>Mon Panier</h2>
                 <Link to="/cart">
-                    <Cart cart={productInCart} products={products} />
+                    <h2 style={h2Title}>Mon Panier</h2>
                 </Link>
+                <Cart cart={productInCart} products={products} />
             </div>
             <div>
                 <h2 style={h2Title}>Mes Statistiques</h2>

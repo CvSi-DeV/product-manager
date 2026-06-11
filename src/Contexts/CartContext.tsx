@@ -1,34 +1,45 @@
 import { createContext, useContext, useState } from "react";
 import type { Product } from "../types/Product";
+import { useCallback } from "react";
 
 interface CartContextType {
     productInCart: number[],
     products: Product[],
     setCartProducts: (products: Product[]) => void,
-    addToCart: (id: number) => void
+    addToCart: (id: number) => void,
+    clearCart: () => void
 }
 
 const CartContext = createContext<CartContextType>({
     productInCart: [],
     products: [],
     setCartProducts: () => { },
-    addToCart: () => { }
+    addToCart: () => { },
+    clearCart: () => { }
 });
 
 function CartProvider({ children }: { children: React.ReactNode }) {
     const [productInCart, setProductsInCart] = useState<number[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
-    const setCartProducts = (products: Product[]) => {
+    //Liste des produits possible dans le panier
+    const setCartProducts = useCallback((products: Product[]) => {
         setProducts(products);
-    };
+    }, []);
 
-    const addToCart = (id: number) => {
-        setProductsInCart([...productInCart, id])
-    };
+    //Liste des Id produit dans le panier
+    const addToCart = useCallback((id: number) => {
+        setProductsInCart(prev => [...prev, id])
+    }, []);
+
+    const clearCart = () => {
+        //on remet les tableaux à zéro
+        setProducts([]);
+        setProductsInCart([])
+    }
 
     return (
-        <CartContext.Provider value={{ productInCart, products, setCartProducts, addToCart }}>
+        <CartContext.Provider value={{ productInCart, products, setCartProducts, addToCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );
