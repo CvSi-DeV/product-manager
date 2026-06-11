@@ -202,3 +202,17 @@ export const loginError = {
     fontSize: '13px',
     marginBottom: '12px'
 }
+
+export const CartPageContainer = {
+    padding: '24px',
+    maxWidth: '800px',
+    margin: '0 auto'
+};
+
+export const ProductsLink = {
+    display: 'inline-block',
+    marginTop: '24px',
+    color: '#3b82f6',
+    textDecoration: 'none',
+    fontWeight: '600'
+}

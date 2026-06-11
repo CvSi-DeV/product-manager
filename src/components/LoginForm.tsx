@@ -5,7 +5,7 @@ import { API_URL, AUTH_URL, getHeaders } from "../config/api";
 interface LoginFormProps {
     onLoginSuccess: (token: string) => void;
 }
-const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
+function LoginForm({ onLoginSuccess }: LoginFormProps) {
     //states
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -43,10 +43,6 @@ const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
             setIsLoading(false);
         }
     };
-
-    if (isLoading) {
-        return (<div style={loginContainer}> <span>Connexion en cours 🛜</span></div>);
-    }
 
     return (
         <div style={loginContainer}>

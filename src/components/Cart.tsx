@@ -18,6 +18,7 @@ function Cart({ cart, products }: CartProps) {
 
     return (
         <div style={cartPanel}>
+            Mon Panier
             <label>🛒 Panier : {itemCount} {itemCount === 1 ? 'article' : 'articles'}
             </label>
             <label>💰 Total : {totalValue} €</label>

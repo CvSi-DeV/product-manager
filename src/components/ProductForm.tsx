@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { borderRadius, button, colors, spacing } from "../styles/theme";
 import type { Category, Product } from "../types/Product"
+import { capitalizeFirst } from "../config/api";
 
 interface ProductFormProps {
     onAddProduct: (product: Omit<Product, 'id'>) => void;
 }
 
-//Tools
-const capitalizeFirst = (str: string) => {
-    if (str.length === 0) return str;
-    return (str.slice(0, 1).toUpperCase() + str.slice(1));
-}
 function ProductForm({ onAddProduct }: ProductFormProps) {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(0);
