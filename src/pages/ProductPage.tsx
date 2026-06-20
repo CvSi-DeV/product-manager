@@ -97,10 +97,11 @@ function ProductPage() {
             }
         );
 
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const newProductsList = products.filter(p => p.id !== id)
+        if (!response.ok)
+            throw new Error(`Error ${response.status}`);
 
         //mettre à jour la liste des produits dans le cart (useCart contexte)
+        const newProductsList = products.filter(p => p.id !== id);
         setCartProducts(newProductsList);
     }, [products, setCartProducts]);
 
