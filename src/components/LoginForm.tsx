@@ -1,9 +1,9 @@
 import { useState, type ChangeEvent } from "react";
-import { loginInput, loginError, loginContainer } from "../styles/theme";
-import { API_URL, AUTH_URL, getHeaders } from "../config/api";
+import { API_URL, AUTH_URL, getFetchOption } from "../config/api";
+import { loginContainer, loginError, loginInput } from "../styles/theme";
 
 interface LoginFormProps {
-    onLoginSuccess: (token: string) => void;
+    onLoginSuccess: (user: { id: number, email: string, role: string }) => void;
 }
 function LoginForm({ onLoginSuccess }: LoginFormProps) {
     //states
@@ -25,16 +25,13 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
         try {
             setIsLoading(true);
 
-            const response = await fetch(`${API_URL}${AUTH_URL}/login`, {
-                method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify({ email: email, password: password })
-            })
+            const response = await fetch(`${API_URL}${AUTH_URL}/login`,
+                getFetchOption('POST', { email: email, password: password }));
             if (!response.ok) throw new Error(`Error ${response.status}`);
 
             const data = await response.json();
             if (data)
-                onLoginSuccess(data.token);
+                onLoginSuccess({ id: data.id, email: data.email, role: data.role });
 
         } catch (error) {
             console.error(error);

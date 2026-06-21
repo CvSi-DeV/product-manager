@@ -1,16 +1,16 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { API_URL, getAuthHeaders, PRODUCT_URL } from './../config/api';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { type ProductFilterStock, type ProductSortBy, type Product } from './../types/Product';
-import { appContainer, h2Title, productCountSpan, productGrill } from './../styles/theme';
+import { useAuth } from '../Contexts/AuthContext';
+import { useCart } from '../Contexts/CartContext';
 import Cart from './../components/Cart';
-import ProductCard from './../components/ProductCard';
-import Statistics from './../components/Statistics';
 import FilterPanel from './../components/FilterPanel';
+import ProductCard from './../components/ProductCard';
 import ProductForm from './../components/ProductForm';
 import SearchBar from './../components/SearchBar';
-import { useCart } from '../Contexts/CartContext';
-import { useAuth } from '../Contexts/AuthContext';
+import Statistics from './../components/Statistics';
+import { API_URL, getFetchOption, PRODUCT_URL } from './../config/api';
+import { appContainer, h2Title, productCountSpan, productGrill } from './../styles/theme';
+import { type Product, type ProductFilterStock, type ProductSortBy } from './../types/Product';
 
 function ProductPage() {
 
@@ -69,11 +69,8 @@ function ProductPage() {
 
     //Ajouter un produit
     const handleAddProduct = useCallback(async (product: Omit<Product, 'id'>) => {
-        const response = await fetch(`${API_URL}${PRODUCT_URL}`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(product)
-        });
+        const response = await fetch(`${API_URL}${PRODUCT_URL}`, getFetchOption('POST', product)
+        );
 
         if (!response.ok) throw new Error(`Ajout du nouveau produit ${product.name} impossible. ` + `Code Erreur : ${response.status}`);
         //Ajouter le nouveau produit à la liste
@@ -90,12 +87,7 @@ function ProductPage() {
 
         if (!products.find(p => p.id === id)) throw new Error(`Produit inexistant ${id} : impossible de supprimer le produit`);
 
-        const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
-            {
-                method: 'DELETE',
-                headers: getAuthHeaders()
-            }
-        );
+        const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`, getFetchOption('DELETE'));
 
         if (!response.ok)
             throw new Error(`Error ${response.status}`);
@@ -109,11 +101,7 @@ function ProductPage() {
         if (!products.find(p => p.id === id)) throw new Error(`Produit inexistant ${id} : impossible de mettre à jour le stock`);
 
         const response = await fetch(`${API_URL}${PRODUCT_URL}/${id}`,
-            {
-                method: 'PATCH',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({ stock: newStock })
-            });
+            getFetchOption('PATCH', { stock: newStock }));
 
         if (!response.ok) throw new Error(`Error ${response.status}`);
 

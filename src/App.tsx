@@ -1,8 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CartPage from "./pages/CartPage";
-import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
 

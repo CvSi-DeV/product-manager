@@ -1,42 +1,57 @@
-import { createContext, useContext, useState } from "react"
-import { getLSInfo, removeLSInfo, setLSInfo } from "../config/api";
+import { createContext, useContext, useEffect, useState } from "react";
+import { API_URL, AUTH_URL, getFetchOption } from "../config/api";
 
 //Interface de description des élements du contexte
 interface AuthContextType {
-    token: string | null,
-    login: (token: string) => void,
+    user: { id: number, email: string, role: string } | undefined,
+    login: (user: { id: number, email: string, role: string }) => void,
     logout: () => void,
-    isConnected: boolean
+    isConnected: boolean,
+    isLoading: boolean
 };
 
 //Initialisation des élements du contexte (valeur par défaut)
 const AuthContext = createContext<AuthContextType>({
-    token: null,
+    user: undefined,
     login: () => { },
     logout: () => { },
-    isConnected: false
+    isConnected: false,
+    isLoading: false
 });
 
 //Valorisation des éléments du contexte
 function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [token, setToken] = useState<string | null>(getLSInfo('token'));
-    const isConnected = !!token;
+    const [user, setUser] = useState<{ id: number, email: string, role: string }>();
+    const isConnected = !!user;
+    const [isLoading, setIsLoading] = useState(true);
 
-    const login = (token: string) => {
-        setLSInfo('token', token);
-        setToken(token);
+    const login = (user: { id: number, email: string, role: string }) => {
+        setUser(user);
     };
 
-    const logout = () => {
-        removeLSInfo('token');
-        setToken(null);
+    const logout = async () => {
+        const response = await fetch(`${API_URL}${AUTH_URL}/logout`, getFetchOption('POST'));
+        if (response.ok)
+            setUser(undefined);
     };
+
+    useEffect(() => {
+        const checkConnected = async () => {
+            const response = await fetch(`${API_URL}${AUTH_URL}/me`, getFetchOption('GET'));
+            if (response.ok) {
+                const data = await response.json();
+                setUser({ id: data.id, email: data.email, role: data.role })
+            }
+            setIsLoading(false);
+        };
+        checkConnected();
+    }, []);
 
     //Retourner le provider JSX
     return (
-        <AuthContext.Provider value={{ token, login, logout, isConnected }} >
+        <AuthContext.Provider value={{ user, login, logout, isConnected, isLoading }} >
             {children}
-        </AuthContext.Provider>
+        </AuthContext.Provider >
     );
 };
 

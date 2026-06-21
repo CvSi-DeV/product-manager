@@ -6,8 +6,8 @@ function LoginPage() {
     const { login } = useAuth()
     const navigate = useNavigate();
 
-    const handleLoginSuccess = (token: string) => {
-        login(token);
+    const handleLoginSuccess = (user: { id: number, email: string, role: string }) => {
+        login(user);
         navigate('/products');
     }
 

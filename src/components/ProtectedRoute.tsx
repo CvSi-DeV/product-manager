@@ -6,7 +6,18 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const { isConnected } = useAuth();
+    const { isConnected, isLoading } = useAuth();
+    if (isLoading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh'
+            }}>
+                ⏳ Chargement ...
+            </div>)
+    }
     if (!isConnected) {
         return (<Navigate to='/login' replace />);
     }
